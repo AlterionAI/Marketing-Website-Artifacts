@@ -1,0 +1,30 @@
+/* Helix mobile — ANIMATION PLUMBING ONLY.
+ *
+ * Deliberately minimal. Everything here is required for the animation engine to
+ * work and is not a design decision. All typography, spacing and layout for the
+ * mobile section lives in Webflow classes, editable in the Style panel.
+ *
+ * STRUCTURE
+ *   .gwrap > canvas#sth        intro graphic, under the header copy
+ *   .blk[data-idx=0] > .inner + .gwrap > canvas#st0     01 experts
+ *   .blk[data-idx=1] > .inner + .gwrap > canvas#st1     02 graph neural network
+ *   .blk[data-idx=2] > .inner + .gwrap > canvas#st2     03 agentic estate
+ *
+ * Do not add design rules to this file — they would be invisible and
+ * un-editable to anyone working in the Webflow Designer.
+ */
+
+/* Stage canvases fill their .gwrap. The engine sizes the canvas to the box, so
+   the box must have real height: aspect-ratio gives it one at any width.
+   The intro box (#sth) is a touch taller than the three section boxes. */
+.gwrap        { width:100%; aspect-ratio:390/320; }
+.gwrap.hero   { aspect-ratio:390/400; }
+.gwrap canvas { width:100%; height:100%; display:block; }
+
+/* Scroll reveal. The engine's IntersectionObserver adds .on to each .blk.
+ * Gated behind .js-anim (set by helix-mobile.js) so that in the Webflow
+ * Designer canvas — where scripts don't run — the copy stays fully visible
+ * and editable instead of collapsing to opacity 0. */
+.js-anim .blk    { opacity:0; transform:translateY(24px);
+                   transition:opacity .8s ease, transform .8s ease; }
+.js-anim .blk.on { opacity:1; transform:none; }

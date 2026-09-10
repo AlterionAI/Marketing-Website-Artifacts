@@ -1,0 +1,55 @@
+/* Helix desktop — runtime layout for the pinned scrollytelling section.
+ * v1 — from prototype v2 (2026-09-10). Same skeleton as aquila.css.
+ *
+ * STRUCTURE
+ *   #pin
+ *     #pinner  → #stagewrap → canvas#stage    the sticky graphic
+ *     .sec  ×4 → .panel                       one copy block per scroll step
+ *   #cta                                      (optional) the section after —
+ *                                             the graphic fades out as it arrives
+ *
+ * Each panel sits inside its own .sec, so the copy flows down the page. The
+ * engine drives each panel's transform and opacity inline per frame and picks
+ * the animation beat (0–3) from whichever .sec is nearest the viewport centre.
+ *
+ * WHAT IS IN THIS FILE
+ * Only rules that MUST NOT apply inside the Webflow Designer, plus the canvas
+ * sizing, which Webflow cannot style because it lives inside an Embed.
+ * Everything else — widths, padding, spacing, typography, colour — lives in
+ * Webflow classes and is editable in the Style panel.
+ *
+ * `.js-anim` is added to <html> by helix.js when the engine starts. The
+ * Designer never runs page custom code, so in the canvas none of these apply
+ * and the section renders as plain stacked blocks: readable and editable.
+ *
+ * The canvas paints its own #0B0B0C background. Give #pin the same colour in
+ * Webflow so the section reads as one surface either side of the graphic.
+ */
+
+/* The canvas lives inside an Embed, so Webflow can't reach it.
+   It is sized to #stagewrap by the engine; these just make it fill. */
+#stage { width:100%; height:100%; display:block; }
+
+/* ---- Live page only ---- */
+.js-anim #pin       { position:relative; }
+.js-anim #pinner    { display:block; position:sticky; top:0; height:100vh;
+                      margin-bottom:-100vh; z-index:1; overflow:hidden; }
+/* Graphic occupies the RIGHT half; the copy column sits on the left.
+   Change `left` here if the layout flips — it is the one layout number the
+   engine's composition (labels in a right-hand column) was tuned against. */
+.js-anim #stagewrap { position:absolute; top:0; bottom:0; left:50%; right:0;
+                      z-index:0; outline:none; min-height:0; }
+
+.js-anim #pin .sec  { height:100vh; position:relative; z-index:2;
+                      pointer-events:none; }
+
+/* The engine writes transform and opacity inline on every scroll frame.
+   Position and fade only. The panel's WIDTH and LEFT OFFSET are Webflow
+   classes — margin still applies once the panel is absolutely positioned,
+   so the same values drive both the Designer canvas and the live page. */
+.js-anim .panel     { position:absolute; left:0; top:50%;
+                      transform:translateY(-50%); opacity:0;
+                      will-change:opacity,transform; }
+
+/* Placeholder text blocks built in Webflow, visible only in the Designer. */
+.js-anim .designer-note { display:none; }
