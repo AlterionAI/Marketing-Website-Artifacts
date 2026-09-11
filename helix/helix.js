@@ -1,4 +1,5 @@
-/* Helix desktop engine — v1 (from prototype v2, 2026-09-10)
+/* Helix desktop engine — v2 (2026-09-11: background configurable via data-bg, default #050505)
+ * v1 was from prototype v2, 2026-09-10
  * Structure: #pin > #pinner > #stagewrap > canvas#stage, plus four .sec blocks
  * each holding one .panel. Same skeleton as aquila.js; canvas instead of SVG.
  * Adds: visibility guard, .js-anim for Designer gating. No data file.
@@ -9,6 +10,8 @@ function __visible(){var e=document.getElementById('pin');return !!(e&&e.getClie
 function __boot(){ if(__started||!__visible())return; __started=true; __start(); }
 function __start(){
 document.documentElement.classList.add('js-anim');
+// Warm the label font so the first canvas text doesn't fall back to system mono.
+try{if(document.fonts&&document.fonts.load){document.fonts.load("500 11px 'IBM Plex Mono'");}}catch(e){}
 
 // ---------------------------------------------------------------- copy driver
 // Panels scroll at 0.6x page speed and fade in as they reach the centre line;
@@ -42,7 +45,9 @@ addEventListener('scroll',pickBeat,{passive:true});setTimeout(pickBeat,50);
 // ---------------------------------------------------------------- engine
 (function(){
 const cv=document.getElementById('stage'), mctx=cv.getContext('2d'); const oc=document.createElement('canvas'), octx=oc.getContext('2d'); let ctx=mctx;
-const S=100, OR='#D24A2F', OG='#DB3926', GL='#8E8B86', G1='#535855', GREYD='#3A3D3A', GREYM='#6E6B66', BG='#0B0B0C';
+const S=100, OR='#D24A2F', OG='#DB3926', GL='#8E8B86', G1='#535855', GREYD='#3A3D3A', GREYM='#6E6B66';
+// Canvas background. Set data-bg="#hex" on the <canvas> (or any ancestor) to match the page.
+const BG=(cv.closest('[data-bg]')||{}).getAttribute?.('data-bg')||'#050505';
 const R={yaw:-43,pitch:46,cov:0.9,gut:10.5,bh:21.5,st:38,lift:2.5,wire:0.39,xray:0.55,wop:0.79,
          cgo:3,cgv:7,cgt:30,cgm:11,cgop:0.33,cgw:0.8,er:1.7,amp:2.5,spd:1.9,yawamp:4,yawspd:2,breathe:0.06,pulse:0.52,rot:1,ltone:0.49};
 const T=R.st, bw=(S*R.cov-2*R.gut)/3, off=(S-S*R.cov)/2, HB=T+R.lift, HT=HB+R.bh;

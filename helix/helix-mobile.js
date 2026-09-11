@@ -1,4 +1,5 @@
-/* Helix mobile engine — v1 (from prototype v2, 2026-09-10)
+/* Helix mobile engine — v2 (2026-09-11: background configurable via data-bg, default #050505)
+ * v1 was from prototype v2, 2026-09-10
  * Four beat-locked scenes, one canvas each: #sth (intro), #st0, #st1, #st2.
  * Each replays its build-in when it scrolls into view and sleeps off-screen.
  * Same skeleton and ids as aquila-mobile.js; canvas instead of SVG.
@@ -7,10 +8,14 @@
 /* Webflow Designer safety: mark that JS is live, so the .blk reveal in
    helix-mobile.css stays inert in the Designer canvas. */
 document.documentElement.classList.add('js-anim');
+// Warm the label font so the first canvas text doesn't fall back to system mono.
+try{if(document.fonts&&document.fonts.load){document.fonts.load("500 11px 'IBM Plex Mono'");}}catch(e){}
 
 function Scene(cv,FIXED,OPT){
 const mctx=cv.getContext('2d'); const oc=document.createElement('canvas'), octx=oc.getContext('2d'); let ctx=mctx;
-const S=100, OR='#D24A2F', OG='#DB3926', GL='#8E8B86', G1='#535855', GREYD='#3A3D3A', GREYM='#6E6B66', BG='#0B0B0C';
+const S=100, OR='#D24A2F', OG='#DB3926', GL='#8E8B86', G1='#535855', GREYD='#3A3D3A', GREYM='#6E6B66';
+// Canvas background. Set data-bg="#hex" on the <canvas> (or any ancestor) to match the page.
+const BG=(cv.closest('[data-bg]')||{}).getAttribute?.('data-bg')||'#050505';
 const R={yaw:-43,pitch:46,cov:0.9,gut:10.5,bh:21.5,st:38,lift:2.5,wire:0.39,xray:0.55,wop:0.79,
          cgo:3,cgv:7,cgt:30,cgm:11,cgop:0.33,cgw:0.8,er:1.7,amp:2.5,spd:1.9,yawamp:4,yawspd:2,breathe:0.06,pulse:0.52,rot:1,ltone:0.49};
 const T=R.st, bw=(S*R.cov-2*R.gut)/3, off=(S-S*R.cov)/2, HB=T+R.lift, HT=HB+R.bh;
